@@ -27,6 +27,7 @@ def main():
 
         if pygame.time.get_ticks() - last_update  >= environment.refresh_rate:
             village_map.draw()
+            person.move_randomly()
 
         screen.blit(village_map.map_surface, (0, 0))
         screen.blit(person.image, (person.x*environment.TileWidth, person.y*environment.TileHeight))
