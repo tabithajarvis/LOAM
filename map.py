@@ -13,6 +13,7 @@ class TileType(IntEnum):
 
 class Tile:
     def __init__(self, color):
+        self.color = color
         if color == pygame.Color(34, 177, 76, 255):
             self.type = TileType.GRASS
         elif color == pygame.Color(185, 122, 87, 255):
@@ -28,9 +29,16 @@ class Tile:
 
 class Map:
     def __init__(self, surface):
+        self.map_surface = pygame.Surface((environment.ScreenHeight, environment.ScreenWidth))
         self.tilemap = []
         for i in range(0, environment.MapHeight):
             row = []
             for j in range(0, environment.MapWidth):
                 row.append(Tile(surface.get_at((i, j))))
             self.tilemap.append(row)
+
+    def draw(self):
+        for i in range(0, environment.MapHeight):
+            row = self.tilemap[i]
+            for j in range(0, environment.MapWidth):
+                pygame.draw.rect(self.map_surface, row[j].color, (i*environment.TileWidth, j*environment.TileHeight, environment.TileWidth, environment.TileHeight), 0)
