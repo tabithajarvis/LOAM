@@ -2,6 +2,8 @@ import pygame
 from map import Map
 from menu import Menu
 import environment
+from pawn import Pawn
+from item import Item
 
 def main():
     pygame.init()
@@ -14,6 +16,10 @@ def main():
 
     last_update = pygame.time.get_ticks()
 
+    person = Pawn(30, 30)
+
+    cabbage = Item(60, 60)
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -23,6 +29,8 @@ def main():
             village_map.draw()
 
         screen.blit(village_map.map_surface, (0, 0))
+        screen.blit(person.image, (person.x*environment.TileWidth, person.y*environment.TileHeight))
+        screen.blit(cabbage.image, (cabbage.x*environment.TileWidth, cabbage.y*environment.TileHeight))
         pygame.display.flip()
 
 if __name__=="__main__":
