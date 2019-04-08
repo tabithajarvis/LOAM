@@ -13,8 +13,6 @@ class TileType(IntEnum):
 
 class Tile:
     def __init__(self, color):
-        print(color)
-        self.passable = True
         if color == pygame.Color(34, 177, 76, 255):
             self.type = TileType.GRASS
         elif color == pygame.Color(185, 122, 87, 255):
