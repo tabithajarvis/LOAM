@@ -20,7 +20,5 @@ class Pawn:
             self.x = min(self.x + 1, environment.MapWidth - 1)
         elif direction == 3:
             self.y = max(self.y - 1, 0)
-        elif direction == 4:
-            self.y = min(self.y + 1, environment.MapHeight - 1)
         else:
-            "That webpage is a liar."
+            self.y = min(self.y + 1, environment.MapHeight - 1)
