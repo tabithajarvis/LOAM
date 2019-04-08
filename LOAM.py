@@ -4,6 +4,7 @@ from menu import Menu
 import environment
 from pawn import Pawn
 from item import Item
+from moveable import Direction
 
 def main():
     pygame.init()
@@ -27,7 +28,8 @@ def main():
 
         if pygame.time.get_ticks() - last_update  >= environment.refresh_rate:
             village_map.draw()
-            person.move_randomly()
+            person.move(Direction.RIGHT)
+            cabbage.move(Direction.DOWN)
 
         screen.blit(village_map.map_surface, (0, 0))
         screen.blit(person.image, (person.x*environment.TileWidth, person.y*environment.TileHeight))

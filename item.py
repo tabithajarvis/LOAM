@@ -1,8 +1,8 @@
 import pygame
 import environment
+from moveable import Moveable
 
-
-class Item:
+class Item(Moveable):
     def __init__(self, x, y):
         self.width = environment.TileWidth
         self.height = environment.TileHeight
