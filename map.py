@@ -13,9 +13,12 @@ class Map:
             for j in range(0, environment.MapWidth):
                 row.append(Tile(surface.get_at((i, j))))
                 if not row[j].passable:
-                    pathrow.append(1)
-                else:
+                    # Terrain difficulty is on a (0,inf) scale, where 0 cannot
+                    # be attained, as that would be teleportation. So, use 0 as
+                    # the 'impassable' value
                     pathrow.append(0)
+                else:
+                    pathrow.append(1.0)
 
             self.tilemap.append(row)
             self.pathmap.append(pathrow)
