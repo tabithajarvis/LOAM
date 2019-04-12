@@ -14,7 +14,8 @@ class Node:
     def __eq__(self, other):
         return self.position == other.position
 
-def a_star(pathmap, start, goal):
+
+def a_star(pathmap, pawnpathmap, start, goal):
     start_node = Node(None, start)
     end_node = Node(None, goal)
 
