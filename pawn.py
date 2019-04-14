@@ -33,22 +33,28 @@ class Pawn(Moveable):
         if self.current_path:
             if self.current_path[0][1] > self.y:
                 self.move(Direction.DOWN)
-                self.current_path.pop(0)
-                return
             elif self.current_path[0][1] < self.y:
                 self.move(Direction.UP)
-                self.current_path.pop(0)
-                return
-            elif self.current_path[0][0] < self.x:
-                self.move(Direction.Left)
-                self.current_path.pop(0)
-                return
+            if self.current_path[0][0] < self.x:
+                self.move(Direction.LEFT)
             elif self.current_path[0][0] > self.x:
                 self.move(Direction.RIGHT)
-                self.current_path.pop(0)
-                return
-            else:
-                return
+            self.current_path.pop(0)
+
+    def vision_check(self, current_map):
+        change = False
+        for i in range(self.vision_range*2 + 1):
+            for j in range(self.vision_range*2 + 1):
+                if self.pathmap[i+self.x-self.vision_range][j+self.y-self.vision_range] != current_map[i+self.x-self.vision_range][j+self.y-self.vision_range]:
+                    self.pathmap[i+self.x-self.vision_range][j+self.y-self.vision_range] = current_map[i+self.x-self.vision_range][j+self.y-self.vision_range]
+                    change = True
+        return change
+
+
+    def update(self, current_pathmap):
+        if self.vision_check(current_pathmap):
+            self.path_find(self.current_path[-1])
+        self.path_follow()
 
 
 

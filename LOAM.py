@@ -20,7 +20,7 @@ def main():
     last_update = pygame.time.get_ticks()
 
     person = Pawn(30, 30)
-    person.path_find((20, 20))
+    person.path_find((10, 10))
     cabbage = Item(60, 60)
 
     while True:
@@ -30,8 +30,9 @@ def main():
 
         if pygame.time.get_ticks() - last_update >= environment.refresh_rate:
             village_map.draw()
-            person.path_follow()
+            person.update(village_map.pathmap)
             cabbage.move(Direction.DOWN)
+            last_update = pygame.time.get_ticks()
 
         screen.blit(village_map.map_surface, (0, 0))
         screen.blit(person.image, (person.x*environment.TileWidth, person.y*environment.TileHeight))
