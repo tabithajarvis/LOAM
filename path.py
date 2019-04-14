@@ -1,4 +1,7 @@
 import math
+
+HeuristicMultiplier = 2
+
 # Node for pathfinding and decision making using A*
 class Node:
     def __init__(self, parent=None, position=None):
@@ -15,6 +18,15 @@ class Node:
     def __eq__(self, other):
         return self.position == other.position
 
+# Creates a pathmap
+def create_pathmap(width, height, fill=1.0):
+    pathmap = []
+    for i in range(0, height):
+        pathrow = []
+        for j in range(0, width):
+            pathrow.append(fill)
+        pathmap.append(pathrow)
+    return pathmap
 
 def a_star(pathmap, start, goal):
     start_node = Node(None, start)
@@ -27,7 +39,7 @@ def a_star(pathmap, start, goal):
     open_list = []
     closed_list = []
     column_bound = len(pathmap) - 1
-    row_bound = column_bound - 1
+    row_bound = len(pathmap[0]) - 1
 
     open_list.append(start_node)
 
@@ -50,10 +62,9 @@ def a_star(pathmap, start, goal):
             while traceback_node is not None:
                 path.append(traceback_node.position)
                 traceback_node = traceback_node.parent
-            return path[::-1]  # Return reversed path
+            return path
 
-        for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]:  # Adjacent squares
-
+        for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0)]:  # Adjacent squares
             # Get next node position
             next_node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
 
@@ -71,17 +82,21 @@ def a_star(pathmap, start, goal):
             new_node = Node(current_node, next_node_position)
 
             # If the node is already on the closed listed, continue
+            node_found = False
             for node in closed_list:
                 if new_node == node:
-                    continue
+                    node_found = True
+                    break
+            if node_found:
+                continue
 
             # Fill the node
-            new_node.difficulty = pathmap[next_node_position[0]][next_node_position[1]]
+            new_node.difficulty = difficulty
             new_node.distance = current_node.distance + difficulty
-            new_node.heuristic = math.sqrt(((new_node.position[0] - end_node.position[0]) ** 2) + (
-                        (new_node.position[1] - end_node.position[1]) ** 2))
+            new_node.heuristic = (abs(new_node.position[0] - end_node.position[0]) +
+                        abs(new_node.position[1] - end_node.position[1])) * HeuristicMultiplier
 
-            # Child is already in the open list, but cheaper. Continue.
+            # The node is already in the open list, but cheaper. Continue.
             for open_node in open_list:
                 if new_node == open_node and new_node.distance > open_node.distance:
                     continue

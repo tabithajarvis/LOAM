@@ -4,14 +4,14 @@ from tile import Tile
 
 class Map:
     def __init__(self, surface):
-        self.map_surface = pygame.Surface((environment.ScreenHeight, environment.ScreenWidth))
+        self.map_surface = pygame.Surface((environment.ScreenWidth, environment.ScreenHeight))
         self.tilemap = []
         self.pathmap = []
         for i in range(0, environment.MapHeight):
             row = []
             pathrow = []
             for j in range(0, environment.MapWidth):
-                row.append(Tile(surface.get_at((i, j))))
+                row.append(Tile(surface.get_at((j, i))))
                 if not row[j].passable:
                     # Terrain difficulty is on a (0,inf) scale, where 0 cannot
                     # be attained, as that would be teleportation. So, use 0 as
@@ -27,4 +27,4 @@ class Map:
         for i in range(0, environment.MapHeight):
             row = self.tilemap[i]
             for j in range(0, environment.MapWidth):
-                pygame.draw.rect(self.map_surface, row[j].color, (i*environment.TileWidth, j*environment.TileHeight, environment.TileWidth, environment.TileHeight), 0)
+                pygame.draw.rect(self.map_surface, row[j].color, (j*environment.TileWidth, i*environment.TileHeight, environment.TileWidth, environment.TileHeight), 0)

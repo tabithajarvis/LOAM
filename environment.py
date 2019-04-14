@@ -4,4 +4,4 @@ MapWidth = 100
 MapHeight = 100
 ScreenWidth = TileWidth * MapWidth
 ScreenHeight = TileHeight * MapHeight
-refresh_rate = 500
+refresh_rate = 50

@@ -1,8 +1,7 @@
 import pygame
 import environment
-from node import a_star
-from moveable import Moveable
-from moveable import Direction
+from path import a_star, create_pathmap
+from moveable import Moveable, Direction
 
 
 class Pawn(Moveable):
@@ -13,47 +12,49 @@ class Pawn(Moveable):
         self.image.fill((225, 25, 225))
         self.x = x
         self.y = y
-        self.pathmap = self.pathmap_init()
-        self.vision_range = 5
+        self.pathmap = create_pathmap(environment.MapWidth, environment.MapHeight, fill=1.0)
+        self.vision_range = 10
         self.current_path = []
+        self.set_target((self.x, self.y))
 
-    def pathmap_init(self):
-        pathmap = []
-        for i in range(0, environment.MapHeight):
-            pathrow = []
-            for j in range(0, environment.MapWidth):
-                    pathrow.append(1.0)
-            pathmap.append(pathrow)
-        return pathmap
-
-    def path_find(self, target_position):
-        self.current_path = a_star(self.pathmap, (self.x, self.y), target_position)
+    def path_find(self):
+        self.current_path = a_star(self.pathmap, (self.x, self.y), self.target)
 
     def path_follow(self):
         if self.current_path:
-            if self.current_path[0][1] > self.y:
+            move_to = self.current_path.pop()
+            if move_to[1] > self.y:
                 self.move(Direction.DOWN)
-            elif self.current_path[0][1] < self.y:
+            elif move_to[1] < self.y:
                 self.move(Direction.UP)
-            if self.current_path[0][0] < self.x:
+            elif move_to[0] < self.x:
                 self.move(Direction.LEFT)
-            elif self.current_path[0][0] > self.x:
+            elif move_to[0] > self.x:
                 self.move(Direction.RIGHT)
-            self.current_path.pop(0)
+
+    def set_target(self, position):
+        self.target = position
+        self.path_find()
 
     def vision_check(self, current_map):
         change = False
-        for i in range(self.vision_range*2 + 1):
-            for j in range(self.vision_range*2 + 1):
-                if self.pathmap[i+self.x-self.vision_range][j+self.y-self.vision_range] != current_map[i+self.x-self.vision_range][j+self.y-self.vision_range]:
-                    self.pathmap[i+self.x-self.vision_range][j+self.y-self.vision_range] = current_map[i+self.x-self.vision_range][j+self.y-self.vision_range]
+
+        min_view_x = max(self.x - self.vision_range, 0)
+        max_view_x = min(self.x + self.vision_range, len(current_map[0]) - 1)
+        min_view_y = max(self.y - self.vision_range, 0)
+        max_view_y = min(self.y + self.vision_range, len(current_map) - 1)
+
+        for i in range(min_view_y, max_view_y + 1):
+            for j in range(min_view_x, max_view_x + 1):
+                if self.pathmap[min_view_y + i][min_view_x + j] != current_map[min_view_y + i][min_view_x + j]:
+                    self.pathmap[min_view_y + i][min_view_x + j] = current_map[min_view_y + i][min_view_x + j]
                     change = True
         return change
 
 
     def update(self, current_pathmap):
         if self.vision_check(current_pathmap):
-            self.path_find(self.current_path[-1])
+            self.path_find()
         self.path_follow()
 
 
@@ -62,5 +63,3 @@ class Pawn(Moveable):
 #      if len(pathmap) == len(self.pathmap) & len(pathmap[0]) == len(self.pathmap[0]):
 #           for i in range(len(pathmap)):
 #               for j in range(len(pathmap[0])):
-
-

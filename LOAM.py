@@ -1,12 +1,8 @@
 import pygame
 from map import Map
-from menu import Menu
 import environment
 from pawn import Pawn
 from item import Item
-from moveable import Direction
-from tile import Tile
-from node import Node
 
 def main():
     pygame.init()
@@ -20,7 +16,7 @@ def main():
     last_update = pygame.time.get_ticks()
 
     person = Pawn(30, 30)
-    person.path_find((10, 10))
+    person.set_target((98,98))
     cabbage = Item(60, 60)
 
     while True:
@@ -31,7 +27,6 @@ def main():
         if pygame.time.get_ticks() - last_update >= environment.refresh_rate:
             village_map.draw()
             person.update(village_map.pathmap)
-            cabbage.move(Direction.DOWN)
             last_update = pygame.time.get_ticks()
 
         screen.blit(village_map.map_surface, (0, 0))
