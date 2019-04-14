@@ -1,3 +1,4 @@
+import math
 # Node for pathfinding and decision making using A*
 class Node:
     def __init__(self, parent=None, position=None):
@@ -15,7 +16,7 @@ class Node:
         return self.position == other.position
 
 
-def a_star(pathmap, pawnpathmap, start, goal):
+def a_star(pathmap, start, goal):
     start_node = Node(None, start)
     end_node = Node(None, goal)
 
@@ -26,7 +27,7 @@ def a_star(pathmap, pawnpathmap, start, goal):
     open_list = []
     closed_list = []
     column_bound = len(pathmap) - 1
-    row_bound = len(column_bound) - 1
+    row_bound = column_bound - 1
 
     open_list.append(start_node)
 
@@ -57,15 +58,17 @@ def a_star(pathmap, pawnpathmap, start, goal):
             next_node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
 
             # If not within range (edges), continue
-            if next_node_position[0] > row_bound or next_node_position[0] < 0 or
-               next_node_position[1] > column_bound or next_node_position[1] < 0:
+            if next_node_position[0] > row_bound or next_node_position[0] < 0 or \
+                    next_node_position[1] > column_bound or next_node_position[1] < 0:
                 continue
+
+            difficulty = pathmap[next_node_position[0]][next_node_position[1]]
 
             # Make sure terrain is passable
-            if pathmap[next_node_position[0]][next_node_position[1]] == 0:
+            if difficulty == 0:
                 continue
 
-            new_node = Node(current_node, node_position)
+            new_node = Node(current_node, next_node_position)
 
             # If the node is already on the closed listed, continue
             for node in closed_list:
@@ -75,8 +78,8 @@ def a_star(pathmap, pawnpathmap, start, goal):
             # Fill the node
             new_node.difficulty = pathmap[next_node_position[0]][next_node_position[1]]
             new_node.distance = current_node.distance + difficulty
-            new_node.heuristic = math.sqrt(((child.position[0] - end_node.position[0]) ** 2) + (
-                        (child.position[1] - end_node.position[1]) ** 2))
+            new_node.heuristic = math.sqrt(((new_node.position[0] - end_node.position[0]) ** 2) + (
+                        (new_node.position[1] - end_node.position[1]) ** 2))
 
             # Child is already in the open list, but cheaper. Continue.
             for open_node in open_list:
