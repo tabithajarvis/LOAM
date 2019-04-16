@@ -27,7 +27,7 @@ class Pawn(Moveable):
                 self.move(Direction.DOWN)
             elif move_to[1] < self.y:
                 self.move(Direction.UP)
-            elif move_to[0] < self.x:
+            if move_to[0] < self.x:
                 self.move(Direction.LEFT)
             elif move_to[0] > self.x:
                 self.move(Direction.RIGHT)
@@ -39,18 +39,12 @@ class Pawn(Moveable):
     def vision_check(self, current_map):
         change = False
 
-        min_view_x = max(self.x - self.vision_range, 0)
-        max_view_x = min(self.x + self.vision_range, len(current_map[0]) - 1)
-        min_view_y = max(self.y - self.vision_range, 0)
-        max_view_y = min(self.y + self.vision_range, len(current_map) - 1)
-
-        for i in range(min_view_y, max_view_y + 1):
-            for j in range(min_view_x, max_view_x + 1):
-                if self.pathmap[min_view_y + i][min_view_x + j] != current_map[min_view_y + i][min_view_x + j]:
-                    self.pathmap[min_view_y + i][min_view_x + j] = current_map[min_view_y + i][min_view_x + j]
+        for i in range(self.min_view()[1], self.max_view()[1] + 1):
+            for j in range(self.min_view()[0], self.max_view()[0] + 1):
+                if self.pathmap[i][j] != current_map[i][j]:
+                    self.pathmap[i][j] = current_map[i][j]
                     change = True
         return change
-
 
     def update(self, current_pathmap):
         if self.vision_check(current_pathmap):
@@ -58,6 +52,11 @@ class Pawn(Moveable):
         self.path_follow()
 
 
+    def min_view(self):
+        return (max(self.x - self.vision_range, 0), max(self.y - self.vision_range, 0))
+
+    def max_view(self):
+        return (min(self.x + self.vision_range, len(self.pathmap[0]) - 1), min(self.y + self.vision_range, len(self.pathmap) - 1))
 
 #   def map_merge(self, pathmap):
 #      if len(pathmap) == len(self.pathmap) & len(pathmap[0]) == len(self.pathmap[0]):

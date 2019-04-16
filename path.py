@@ -73,7 +73,7 @@ def a_star(pathmap, start, goal):
                     next_node_position[1] > column_bound or next_node_position[1] < 0:
                 continue
 
-            difficulty = pathmap[next_node_position[0]][next_node_position[1]]
+            difficulty = pathmap[next_node_position[1]][next_node_position[0]]
 
             # Make sure terrain is passable
             if difficulty == 0:
