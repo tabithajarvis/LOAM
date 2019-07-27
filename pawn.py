@@ -15,6 +15,7 @@ class Pawn(Moveable):
         self.pathmap = create_pathmap(environment.MapWidth, environment.MapHeight, fill=1.0)
         self.vision_range = 10
         self.current_path = []
+        self.at_target = True
         self.set_target((self.x, self.y))
 
     def path_find(self):
@@ -31,10 +32,14 @@ class Pawn(Moveable):
                 self.move(Direction.LEFT)
             elif move_to[0] > self.x:
                 self.move(Direction.RIGHT)
+        if self.target == (self.x, self.y):
+            self.at_target = True
 
     def set_target(self, position):
         self.target = position
         self.path_find()
+        if self.target != (self.x, self.y):
+            self.at_target = False
 
     def vision_check(self, current_map):
         change = False
@@ -49,7 +54,8 @@ class Pawn(Moveable):
     def update(self, current_pathmap):
         if self.vision_check(current_pathmap):
             self.path_find()
-        self.path_follow()
+        if not self.at_target:
+            self.path_follow()
 
 
     def min_view(self):
