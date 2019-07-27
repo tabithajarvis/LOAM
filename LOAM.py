@@ -27,7 +27,7 @@ def main():
         if pygame.time.get_ticks() - last_update >= environment.refresh_rate:
             village_map.draw()
             person.update(village_map.pathmap)
-            if person.at_target:
+            if person.at_target():
                 person.set_target((30, 30))
 
             screen.blit(village_map.map_surface, (0, 0))

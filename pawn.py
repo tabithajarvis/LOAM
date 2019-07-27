@@ -32,14 +32,10 @@ class Pawn(Moveable):
                 self.move(Direction.LEFT)
             elif move_to[0] > self.x:
                 self.move(Direction.RIGHT)
-        if self.target == (self.x, self.y):
-            self.at_target = True
 
     def set_target(self, position):
         self.target = position
         self.path_find()
-        if self.target != (self.x, self.y):
-            self.at_target = False
 
     def vision_check(self, current_map):
         change = False
@@ -57,6 +53,8 @@ class Pawn(Moveable):
         if not self.at_target:
             self.path_follow()
 
+    def at_target(self):
+        return self.target == (self.x, self.y):
 
     def min_view(self):
         return (max(self.x - self.vision_range, 0), max(self.y - self.vision_range, 0))
